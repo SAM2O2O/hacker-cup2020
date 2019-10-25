@@ -7,8 +7,21 @@ package com.immomo.test.hacker;
  */
 public class Main {
 
-
+    /**
+     * args[0] 文件夹路径
+     * args[1] 男用户memoid
+     *
+     * @param args
+     */
     public static void main(String[] args) {
+
+        /**
+         * 文件目录
+         */
+        String fileDir = args[0];
+
+        // 用户的id
+        String momoid = args[1];
 
     }
 
