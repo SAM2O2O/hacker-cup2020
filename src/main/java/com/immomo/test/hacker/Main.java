@@ -2,7 +2,6 @@ package com.immomo.test.hacker;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -44,11 +43,10 @@ public class Main {
         /**
          * 文件目录
          */
-        final String fileDir = "/Users/momo/IdeaProjects/momo-im/hackercup/src/main/resources/location";
+        final String fileDir = args[0].trim();
 
         // 用户的id
-        final String momoid = "14459344";
-
+        final String momoid = args[1].trim();
 
         File parentFile = new File(fileDir);
 

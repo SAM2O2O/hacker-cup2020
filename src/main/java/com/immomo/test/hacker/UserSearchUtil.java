@@ -8,6 +8,8 @@ public class UserSearchUtil {
     private static final double LAT_30KM = 0.27;
     private static final double LNG_30KM = 0.45;
     private static final int DIS_30KM = 30_000;
+    // 地球赤道半径
+    private static double EARTH_RADIUS2 = 6378.137;
 
     /**
      * @param list
@@ -80,7 +82,7 @@ public class UserSearchUtil {
                 continue;
             }
 
-            double distance = Location.getDistance(user.getLat(), user.getLng(), curLat, curLng);
+            double distance = getDistance(user.getLat(), user.getLng(), curLat, curLng);
             if (distance > DIS_30KM) {
                 continue;
             }
@@ -125,6 +127,28 @@ public class UserSearchUtil {
             userList[i] = userList[i - 1];
             userList[i - 1] = tmp;
         }
+    }
+
+    /**
+     * @描述 经纬度获取距离，单位为米
+     **/
+    public static double getDistance(double lat1, double lng1, double lat2,
+                                     double lng2) {
+        double radLat1 = rad(lat1);
+        double radLat2 = rad(lat2);
+        double a = radLat1 - radLat2;
+        double b = rad(lng1) - rad(lng2);
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
+                + Math.cos(radLat1) * Math.cos(radLat2)
+                * Math.pow(Math.sin(b / 2), 2)));
+        s = s * EARTH_RADIUS2;
+        s = Math.round(s * 10000d) / 10000d;
+        s = s * 1000;
+        return s;
+    }
+
+    private static double rad(double d) {
+        return d * Math.PI / 180.0;
     }
 
 }
