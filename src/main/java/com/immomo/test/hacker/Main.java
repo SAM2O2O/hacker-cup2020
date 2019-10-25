@@ -79,6 +79,7 @@ public class Main {
 
                         System.out.println("======top 10 user=" + topUser);
 
+                        executorService.shutdown();
                         System.exit(0);
                     }
 
