@@ -42,10 +42,10 @@ public class Main {
         /**
          * 文件目录
          */
-        final String fileDir = "/Users/momo/Desktop/test";
+        final String fileDir = args[0];
 
         // 用户的id
-        final String momoid = "311669337";
+        final String momoid = args[1];
 
         File parentFile = new File(fileDir);
 
@@ -54,6 +54,7 @@ public class Main {
 
 
         int fileSize = allFiles.length;
+        TOTAL_COUNTER.set(fileSize);
 
         for (int i = 0; i < fileSize; i++) {
 
@@ -63,21 +64,22 @@ public class Main {
                 @Override
                 public void run() {
 
-                    /**
-                     * 这里查查 男用户在哪个省里
-                     * return province ，女用户信息
-                     */
-                    Province province = findUserFromProvince(f, momoid);
-                    TOTAL_COUNTER.incrementAndGet();
-                    /**
-                     *  master 是男用户，还没查到
-                     */
-                    if (master == null) {
-                        UndoProvinceList.add(province);
-                        System.out.println("======addTask=" + province.getFemales().size());
-                    } else {
-                        System.out.println("======addTask=" + province.getFemales().size());
-                        executeProvinceTask(province, 1);
+                    try {
+                        /**
+                         * 这里查查 男用户在哪个省里
+                         * return province ，女用户信息
+                         */
+                        Province province = findUserFromProvince(f, momoid);
+                        /**
+                         *  master 是男用户，还没查到
+                         */
+                        if (master == null) {
+                            UndoProvinceList.add(province);
+                        } else {
+                            executeProvinceTask(province, 1);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
                 }
@@ -146,7 +148,7 @@ public class Main {
     private static Province findUserFromProvince(File file, String momoid) {
 
         Province province = new Province();
-        province.setName(file.getName());
+//        province.setName(file.getName());
 
         InputStreamReader inputReader = null;
         BufferedReader bf = null;
@@ -157,38 +159,41 @@ public class Main {
             // 按行读取字符串
             String str;
             while ((str = bf.readLine()) != null) {
-                User user = match(str);
+                try {
+                    User user = match(str);
 
-                if (province.getMinLng() == 0 || province.getMinLat() == 0) {
-                    province.setMinLat(user.getLat());
-                    province.setMinLng(user.getLng());
-                }
-
-                if (user.getSex().startsWith("F") || user.getSex().startsWith("f")) {
-                    province.addFemale(user);
-
-                    if (user.getLat() > province.getMaxLat()) {
-                        province.setMaxLat(user.getLat());
-                    }
-
-                    if (user.getLat() < province.getMinLat()) {
+                    if (province.getMinLng() == 0 || province.getMinLat() == 0) {
                         province.setMinLat(user.getLat());
-                    }
-
-                    if (user.getLng() > province.getMaxLng()) {
-                        province.setMaxLng(user.getLng());
-                    }
-
-                    if (user.getLng() < province.getMinLng()) {
                         province.setMinLng(user.getLng());
                     }
-                } else {
-                    // 男性
-                    if (master == null && user != null && momoid.equals(user.getMomoId())) {
-                        master = user;
-                    }
-                }
 
+                    if (user.getSex().startsWith("F") || user.getSex().startsWith("f")) {
+                        province.addFemale(user);
+
+                        if (user.getLat() > province.getMaxLat()) {
+                            province.setMaxLat(user.getLat());
+                        }
+
+                        if (user.getLat() < province.getMinLat()) {
+                            province.setMinLat(user.getLat());
+                        }
+
+                        if (user.getLng() > province.getMaxLng()) {
+                            province.setMaxLng(user.getLng());
+                        }
+
+                        if (user.getLng() < province.getMinLng()) {
+                            province.setMinLng(user.getLng());
+                        }
+                    } else {
+                        // 男性
+                        if (master == null && user != null && momoid.equals(user.getMomoId())) {
+                            master = user;
+                        }
+                    }
+                } catch (Exception e) {
+
+                }
 
             }
         } catch (IOException e) {
