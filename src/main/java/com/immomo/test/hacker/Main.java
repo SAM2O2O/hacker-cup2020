@@ -1,9 +1,12 @@
 package com.immomo.test.hacker;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -22,9 +25,9 @@ public class Main {
 
     private static volatile User master = null;
 
-    private static volatile AtomicInteger TOTAL_COUNTER = new AtomicInteger();
+    private static AtomicInteger TOTAL_COUNTER = new AtomicInteger();
 
-    private static List<List<User>> topNearestUserList = new ArrayList<>();
+    private static List<List<User>> topNearestUserList = new CopyOnWriteArrayList<>();
 
     private static List<Province> UndoProvinceList = new ArrayList<>();
 
@@ -75,10 +78,8 @@ public class Main {
                      *  master 是男用户，还没查到
                      */
                     if (master == null) {
-                        System.out.println("wait worker=");
                         UndoProvinceList.add(province);
                     } else {
-                        System.out.println("start worker=");
                         executeProvinceTask(province);
                     }
 
@@ -117,19 +118,25 @@ public class Main {
 
         // 已经查到master了
         List<User> nearestUsers = UserSearchUtil.getNearest30kmUsers(province, master.getLat(), master.getLng(), 10);
-        topNearestUserList.add(nearestUsers);
+
+        if (nearestUsers != null && nearestUsers.size() > 0) {
+            topNearestUserList.add(nearestUsers);
+        } else {
+            System.out.println("----nearestUsers=" + nearestUsers);
+        }
 
         int count = TOTAL_COUNTER.decrementAndGet();
 
-        System.out.println("----count=" + count);
 
         // 每个省份的做完，去合并一次
-        if (count <= 0) {
+        if (count == 0) {
 
-            System.out.println("======start merge user=" + topNearestUserList.size());
+            System.out.println("======start merge user=" + topNearestUserList.get(0));
             List<User> topUser = UserSearchUtil.findMinDistanceUsers(topNearestUserList, 10);
 
-            System.out.println("======final result user=" + topUser.size());
+            for (User u : topUser) {
+                System.out.println("user=" + u.getMomoId());
+            }
             executorService.shutdown();
             System.exit(0);
         }
@@ -180,7 +187,6 @@ public class Main {
                     // 男性
                     if (master == null && user != null && momoid.equals(user.getMomoId())) {
                         master = user;
-                        System.out.println("find you master=" + master);
                     }
                 }
 

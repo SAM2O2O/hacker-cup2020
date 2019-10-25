@@ -19,26 +19,22 @@ public class UserSearchUtil {
         double maxDis = DIS_30KM;
         int curSize = 0;
 
-        System.out.println("--------------" + list.size());
-
         for (int i = 0; i < list.size(); i++) {
 
             List<User> curList = list.get(i);
-            System.out.println("--------------[idata]" + curList.isEmpty());
 
             if (curList.isEmpty()) {
                 continue;
             }
 
-            System.out.println("--------------[i]" + i);
             for (int j = 0; j < curList.size(); j++) {
 
-                System.out.println("--------------[j]" + j);
                 if (curSize >= size && curList.get(j).getDistance() > maxDis) {
                     break;
                 }
 
                 pull(userList, curSize, curList.get(j));
+
                 if (curSize < size) {
                     curSize++;
                 }
