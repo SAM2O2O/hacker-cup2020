@@ -39,14 +39,13 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
         /**
          * 文件目录
          */
-        final String fileDir = args[0].trim();
+        final String fileDir = "/Users/momo/Desktop/test";
 
         // 用户的id
-        final String momoid = args[1].trim();
+        final String momoid = "311669337";
 
         File parentFile = new File(fileDir);
 
@@ -55,8 +54,6 @@ public class Main {
 
 
         int fileSize = allFiles.length;
-        TOTAL_COUNTER.set(fileSize);
-
 
         for (int i = 0; i < fileSize; i++) {
 
@@ -71,14 +68,16 @@ public class Main {
                      * return province ，女用户信息
                      */
                     Province province = findUserFromProvince(f, momoid);
-
+                    TOTAL_COUNTER.incrementAndGet();
                     /**
                      *  master 是男用户，还没查到
                      */
                     if (master == null) {
                         UndoProvinceList.add(province);
+                        System.out.println("======addTask=" + province.getFemales().size());
                     } else {
-                        executeProvinceTask(province);
+                        System.out.println("======addTask=" + province.getFemales().size());
+                        executeProvinceTask(province, 1);
                     }
 
                 }
@@ -91,7 +90,9 @@ public class Main {
 
     private static void startUndoTask() {
 
-        if (!IS_RUNNIng.getAndSet(true)) {
+        boolean isRun = IS_RUNNIng.getAndSet(true);
+
+        if (!isRun) {
 
             if (UndoProvinceList != null) {
 
@@ -100,7 +101,7 @@ public class Main {
                     executorService.submit(new Runnable() {
                         @Override
                         public void run() {
-                            executeProvinceTask(province);
+                            executeProvinceTask(province, 2);
                         }
                     });
 
@@ -110,7 +111,7 @@ public class Main {
 
     }
 
-    private static boolean executeProvinceTask(Province province) {
+    private static boolean executeProvinceTask(Province province, int type) {
 
         startUndoTask();
 
@@ -122,7 +123,6 @@ public class Main {
         }
 
         int count = TOTAL_COUNTER.decrementAndGet();
-
 
         // 每个省份的做完，去合并一次
         if (count == 0) {
@@ -146,6 +146,7 @@ public class Main {
     private static Province findUserFromProvince(File file, String momoid) {
 
         Province province = new Province();
+        province.setName(file.getName());
 
         InputStreamReader inputReader = null;
         BufferedReader bf = null;

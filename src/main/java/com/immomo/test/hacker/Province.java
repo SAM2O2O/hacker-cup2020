@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class Province {
 
+    private String name;
     private double maxLat;
     private double minLat;
     private double maxLng;
@@ -20,6 +21,14 @@ public class Province {
 
     private String lastMomoid;
 
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public double getMaxLat() {
         return maxLat;
