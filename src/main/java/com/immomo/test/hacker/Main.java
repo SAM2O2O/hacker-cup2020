@@ -155,7 +155,7 @@ public class Main {
         try {
 
             inputReader = new InputStreamReader(new FileInputStream(file));
-            bf = new BufferedReader(inputReader);
+            bf = new BufferedReader(inputReader, 5 * 1024 * 1024);
             // 按行读取字符串
             String str;
             while ((str = bf.readLine()) != null) {
