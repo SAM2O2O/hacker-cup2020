@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +26,9 @@ public class Main {
 
     private static List<List<User>> topNearestUserList = new ArrayList<>();
 
+    private static List<Province> UndoProvinceList = new ArrayList<>();
+
+    private static AtomicBoolean IS_RUNNIng = new AtomicBoolean(false);
 
     /**
      * args[0] 文件夹路径
@@ -60,27 +64,23 @@ public class Main {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
+
+                    /**
+                     * 这里查查 男用户在哪个省里
+                     * return province ，女用户信息
+                     */
                     Province province = findUserFromProvince(f, momoid);
-                    System.out.println("file=" + f.getName() + " province=" + province);
+                    System.out.println("----province=" + province.getFemales().size());
 
-                    //
-                    if (inProvince()) {
-                        List<User> nearestUsers = UserSearchUtil.getNearest30kmUsers(province, master.getLat(), master.getLng(), 10);
-                        topNearestUserList.add(nearestUsers);
-                    }
-
-                    int count = TOTAL_COUNTER.decrementAndGet();
-
-                    // 每个省份的做完，去合并一次
-                    if (count <= 0) {
-
-                        System.out.println("----end");
-                        List<User> topUser = UserSearchUtil.findMinDistanceUsers(topNearestUserList, 10);
-
-                        System.out.println("======top 10 user=" + topUser);
-
-                        executorService.shutdown();
-                        System.exit(0);
+                    /**
+                     *  master 是男用户，还没查到
+                     */
+                    if (master == null) {
+                        System.out.println("----wait worker=");
+                        UndoProvinceList.add(province);
+                    } else {
+                        System.out.println("----start worker=");
+                        executeProvinceTask(province);
                     }
 
                 }
@@ -88,13 +88,57 @@ public class Main {
 
         }
 
-
-        System.out.println("program finish ,cost=" + (System.currentTimeMillis() - startTime));
     }
 
-    private static boolean inProvince() {
+
+    private static void startUndoTask() {
+
+        if (!IS_RUNNIng.getAndSet(true)) {
+
+            if (UndoProvinceList != null) {
+
+                for (final Province province : UndoProvinceList) {
+
+                    executorService.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            executeProvinceTask(province);
+                        }
+                    });
+
+                }
+            }
+        }
+
+    }
+
+    private static boolean executeProvinceTask(Province province) {
+
+        startUndoTask();
+
+        // 已经查到master了
+
+        List<User> nearestUsers = UserSearchUtil.getNearest30kmUsers(province, master.getLat(), master.getLng(), 10);
+        topNearestUserList.add(nearestUsers);
+
+        System.out.println("----province top 10=" + nearestUsers);
+
+        int count = TOTAL_COUNTER.decrementAndGet();
+        // 每个省份的做完，去合并一次
+        if (count <= 0) {
+
+            System.out.println("----end + list" + topNearestUserList.size());
+            List<User> topUser = UserSearchUtil.findMinDistanceUsers(topNearestUserList, 10);
+
+            System.out.println("======top 10 user=" + topUser);
+
+            executorService.shutdown();
+            System.exit(0);
+        }
+
         return true;
     }
+
 
     private static Province findUserFromProvince(File file, String momoid) {
 
