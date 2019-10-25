@@ -121,8 +121,6 @@ public class Main {
 
         if (nearestUsers != null && nearestUsers.size() > 0) {
             topNearestUserList.add(nearestUsers);
-        } else {
-            System.out.println("----nearestUsers=" + nearestUsers);
         }
 
         int count = TOTAL_COUNTER.decrementAndGet();
@@ -131,12 +129,14 @@ public class Main {
         // 每个省份的做完，去合并一次
         if (count == 0) {
 
-            System.out.println("======start merge user=" + topNearestUserList.get(0));
             List<User> topUser = UserSearchUtil.findMinDistanceUsers(topNearestUserList, 10);
 
+            StringBuilder sb = new StringBuilder();
             for (User u : topUser) {
-                System.out.println("user=" + u.getMomoId());
+                sb.append(u.getMomoId() + "\n");
             }
+
+            System.out.println(sb.toString());
             executorService.shutdown();
             System.exit(0);
         }
@@ -228,12 +228,5 @@ public class Main {
 
         return null;
     }
-
-
-    private static List<User> getNearest30kmUsers(Province province, User master) {
-
-        return Arrays.asList(null);
-    }
-
 
 }

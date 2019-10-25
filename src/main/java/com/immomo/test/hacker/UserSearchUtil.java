@@ -127,7 +127,4 @@ public class UserSearchUtil {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(Location.getDistance(53.0, 135.5, 53.0, 135.82));
-    }
 }
