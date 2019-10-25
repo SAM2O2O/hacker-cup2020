@@ -12,6 +12,29 @@ public class UserSearchUtil {
     // 地球赤道半径
     private static double EARTH_RADIUS2 = 6378.137;
 
+
+    public static boolean notIn30Km(User user, User master) {
+        try {
+            if (master != null) {
+                double maxLat = master.getLat() + LAT_30KM;
+                double minLat = master.getLat() - LAT_30KM;
+                double maxLng = master.getLng() + LNG_30KM;
+                double minLng = master.getLng() - LNG_30KM;
+
+                if (user.getLat() < minLat || user.getLat() > maxLat) {
+                    return true;
+                }
+
+                if (user.getLng() < minLng || user.getLng() > maxLng) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+
     /**
      * @param list
      * @param size

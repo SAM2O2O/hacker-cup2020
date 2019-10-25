@@ -42,10 +42,10 @@ public class Main {
         /**
          * 文件目录
          */
-        final String fileDir = args[0];
+        final String fileDir = "/Users/momo/Desktop/test";
 
         // 用户的id
-        final String momoid = args[1];
+        final String momoid = "311669337";
 
         File parentFile = new File(fileDir);
 
@@ -153,13 +153,16 @@ public class Main {
         InputStreamReader inputReader = null;
         BufferedReader bf = null;
         try {
-
-            inputReader = new InputStreamReader(new FileInputStream(file));
-            bf = new BufferedReader(inputReader, 5 * 1024 * 1024);
+            bf = new BufferedReader(new FileReader(file), 10 * 1024 * 1024);
             // 按行读取字符串
             String str;
             while ((str = bf.readLine()) != null) {
                 try {
+
+                    if (str == null) {
+                        continue;
+                    }
+
                     User user = match(str);
 
                     if (province.getMinLng() == 0 || province.getMinLat() == 0) {
@@ -168,6 +171,13 @@ public class Main {
                     }
 
                     if (user.getSex().startsWith("F") || user.getSex().startsWith("f")) {
+
+                        if (master != null) {
+                            if (UserSearchUtil.notIn30Km(user, master)) {
+                                continue;
+                            }
+                        }
+
                         province.addFemale(user);
 
                         if (user.getLat() > province.getMaxLat()) {
@@ -218,7 +228,6 @@ public class Main {
         // 这里计算。。。
         return province;
     }
-
 
     private static User match(String jsonStr) {
         final Matcher matcher = pattern.matcher(jsonStr);
