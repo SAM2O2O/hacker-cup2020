@@ -65,6 +65,7 @@ public class User {
                 ", lat=" + lat +
                 ", lng=" + lng +
                 ", sex='" + sex + '\'' +
+                ", distance=" + distance +
                 '}';
     }
 }

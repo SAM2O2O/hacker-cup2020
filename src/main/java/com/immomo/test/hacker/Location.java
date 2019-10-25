@@ -12,10 +12,6 @@ public class Location {
     // 地球赤道半径
     private static double EARTH_RADIUS2 = 6378.137;
 
-    private static double rad(double d) {
-        return d * Math.PI / 180.0;
-    }
-
     /**
      * @描述 经纬度获取距离，单位为米
      **/
@@ -34,4 +30,7 @@ public class Location {
         return s;
     }
 
+    private static double rad(double d) {
+        return d * Math.PI / 180.0;
+    }
 }

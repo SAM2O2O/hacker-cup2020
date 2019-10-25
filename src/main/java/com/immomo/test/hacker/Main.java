@@ -70,16 +70,15 @@ public class Main {
                      * return province ，女用户信息
                      */
                     Province province = findUserFromProvince(f, momoid);
-                    System.out.println("----province=" + province.getFemales().size());
 
                     /**
                      *  master 是男用户，还没查到
                      */
                     if (master == null) {
-                        System.out.println("----wait worker=");
+                        System.out.println("wait worker=");
                         UndoProvinceList.add(province);
                     } else {
-                        System.out.println("----start worker=");
+                        System.out.println("start worker=");
                         executeProvinceTask(province);
                     }
 
@@ -117,21 +116,20 @@ public class Main {
         startUndoTask();
 
         // 已经查到master了
-
         List<User> nearestUsers = UserSearchUtil.getNearest30kmUsers(province, master.getLat(), master.getLng(), 10);
         topNearestUserList.add(nearestUsers);
 
-        System.out.println("----province top 10=" + nearestUsers);
-
         int count = TOTAL_COUNTER.decrementAndGet();
+
+        System.out.println("----count=" + count);
+
         // 每个省份的做完，去合并一次
         if (count <= 0) {
 
-            System.out.println("----end + list" + topNearestUserList.size());
+            System.out.println("======start merge user=" + topNearestUserList.size());
             List<User> topUser = UserSearchUtil.findMinDistanceUsers(topNearestUserList, 10);
 
-            System.out.println("======top 10 user=" + topUser);
-
+            System.out.println("======final result user=" + topUser.size());
             executorService.shutdown();
             System.exit(0);
         }
