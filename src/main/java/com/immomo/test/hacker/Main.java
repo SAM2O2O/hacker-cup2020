@@ -159,11 +159,11 @@ public class Main {
             while ((str = bf.readLine()) != null) {
                 try {
 
-                    if (str == null) {
+                    User user = match(str);
+
+                    if (user == null) {
                         continue;
                     }
-
-                    User user = match(str);
 
                     if (province.getMinLng() == 0 || province.getMinLat() == 0) {
                         province.setMinLat(user.getLat());
