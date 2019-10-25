@@ -1,6 +1,7 @@
 package com.immomo.test.hacker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserSearchUtil {
@@ -61,8 +62,15 @@ public class UserSearchUtil {
      * @return
      */
     public static List<User> getNearest30kmUsers(Province provinceUserInfo, double curLat, double curLng, int size) {
+        if (curLat > provinceUserInfo.getMaxLat() + LAT_30KM
+                || curLat < provinceUserInfo.getMinLat() - LAT_30KM
+                || curLng > provinceUserInfo.getMaxLng() + LNG_30KM
+                || curLng < provinceUserInfo.getMinLng() - LNG_30KM) {
+            return Arrays.asList();
+        }
+
         if (provinceUserInfo.getFemales() == null) {
-            return null;
+            return Arrays.asList();
         }
 
         double maxLat = curLat + LAT_30KM;
