@@ -16,7 +16,7 @@ public class RedisWriter {
     private static Jedis jedis = new Jedis(Main.RedisHost, Main.RedisPort);
     private static final String redisKey = "result-key";
 
-    public static void start() {
+    public static void write() {
 
         new Thread(new Runnable() {
             @Override

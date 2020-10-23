@@ -35,7 +35,9 @@ public class Main {
 
         RedisReader.read();
 
-        RedisWriter.start();
+        RedisWriter.write();
+
+        RedisComparer.compare();
     }
 
     /**
