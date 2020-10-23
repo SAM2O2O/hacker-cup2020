@@ -42,7 +42,7 @@ public class RedisComparer {
                     compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
                     break;
                 } else {
-                    System.out.println("======num=" + num + " data1=" + data1);
+//                    System.out.println("======num=" + num + " data1=" + data1);
                 }
 
                 String data2 = compareDatas[i];
