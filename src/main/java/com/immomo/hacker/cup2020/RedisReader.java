@@ -27,15 +27,17 @@ public class RedisReader {
                     // 10个连接
                     Jedis jedis = new Jedis(Main.RedisHost, Main.RedisPort);
 
-                    String data = jedis.rpop(redisKey);
+                    while (true) {
+                        String data = jedis.rpop(redisKey);
 
-                    if (data != null) {
-                        count++;
-                        bufList.add(data);
-                    } else {
-                        Long llen = jedis.llen(redisKey);
-                        if (llen == null || llen <= 0) {
-                            return;
+                        if (data != null) {
+                            count++;
+                            bufList.add(data);
+                        } else {
+                            Long llen = jedis.llen(redisKey);
+                            if (llen == null || llen <= 0) {
+                                return;
+                            }
                         }
                     }
 
