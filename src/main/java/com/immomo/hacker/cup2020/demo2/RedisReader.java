@@ -11,10 +11,12 @@ import java.util.List;
  */
 public class RedisReader {
 
+    public static final int[] READ_INDEX = new int[10];
+
     public static void read() {
         for (int i = 0; i < 10; i++) {
 
-
+            final int fi = i;
             final String redisKey = "list-" + i;
 
             new Thread(new Runnable() {
@@ -23,7 +25,6 @@ public class RedisReader {
 
                     List bufList = Main.RedisToListMap.get(redisKey);
 
-                    int count = 0;
                     // 10个连接
                     Jedis jedis = new Jedis(Main.RedisHost, Main.RedisPort);
 
@@ -31,14 +32,16 @@ public class RedisReader {
                         String data = jedis.rpop(redisKey);
 
                         if (data != null) {
-                            count++;
+                            READ_INDEX[fi]++;
                             bufList.add(data);
                         } else {
                             Long llen = jedis.llen(redisKey);
+
                             if (llen == null || llen <= 0) {
                                 return;
                             }
                         }
+//                        System.out.println("Reader redisKey=" + redisKey + " count=" + READ_INDEX[fi] + " size=" + bufList.size());
                     }
 
                 }

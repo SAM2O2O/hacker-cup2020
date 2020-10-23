@@ -18,6 +18,7 @@ public class Test {
 
     public static final String RedisHost = "127.0.0.1";
     public static final int RedisPort = 6379;
+    private static final int LENGTH = 10;
 
     /**
      * @param args
@@ -29,18 +30,22 @@ public class Test {
 
             jedis.del(redisKey);
 
-            StringBuilder middleBody = new StringBuilder(32765);
-            for (int j = 0; j < 32765; j++) {
+            StringBuilder middleBody = new StringBuilder(LENGTH - 3);
+            for (int j = 0; j < LENGTH - 3; j++) {
                 middleBody.append(i);
             }
             for (int j = 0; j < 1000; j++) {
-                StringBuilder sb = new StringBuilder(32768);
+                StringBuilder sb = new StringBuilder(LENGTH);
 
-                sb.append(i + 1);
+                if (i == 0) {
+                    sb.append(i + 1);
+                } else {
+                    sb.append(i);
+                }
                 sb.append(i);
                 sb.append(middleBody.toString());
-                sb.append(j);
-                jedis.rpush(redisKey, sb.toString());
+                sb.append(i);
+                jedis.lpush(redisKey, sb.toString());
             }
         }
 

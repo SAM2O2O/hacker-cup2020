@@ -1,6 +1,6 @@
 package com.immomo.hacker.cup2020.demo1;
 
-public class Test {
+public class Main {
 
 	public static void main(String[] args) {
 		Thread r1 =new Thread(new ReadThread(0, 1, 2));

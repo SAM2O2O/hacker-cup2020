@@ -1,5 +1,7 @@
 package com.immomo.hacker.cup2020.demo2;
 
+import com.immomo.hacker.cup2020.demo1.ReadThread;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -10,20 +12,46 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RedisComparer {
 
     private static AtomicInteger total = new AtomicInteger();
+
     private static String[] compareDatas = new String[10];
+
+    public static final int[] COMPARE_INDEX = new int[10];
 
     public static void compare() {
 
+        // 标记是否比较完成，默认false
+        boolean[] compared = new boolean[10];
+
+        int first = 0;
         while (true) {
-            String data1 = compareDatas[0];
-            int num = 0;
-            for (int i = 1; i < compareDatas.length; i++) {
-                String data2 = compareDatas[i];
-                if (data1 == null) {
-                    num = i;
-                    data1 = data2;
+            int num = first;
+            String data1 = null;
+            // 先找到data1
+            //# TODO 考虑最后一个
+            for (; first < compareDatas.length; first++) {
+                if (!compared[first]) {
+                    num = first;
+                    data1 = compareDatas[num];
+                    break;
                 }
+            }
+
+            for (int i = num + 1; i < compareDatas.length; i++) {
+
+                if (data1 == null) {
+                    compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
+                    break;
+                } else {
+                    System.out.println("======num=" + num + " data1=" + data1);
+                }
+
+                String data2 = compareDatas[i];
                 if (data2 == null) {
+                    if (compared[i]) {
+                        i++;
+                    } else {
+                        compareDatas[i] = Main.RedisToListMap.get("list-" + i).poll();
+                    }
                     continue;
                 }
                 if (compare(data1, data2) > 0) {
@@ -31,13 +59,17 @@ public class RedisComparer {
                     num = i;
                 }
             }
-            compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
             if (data1 != null) {
+                COMPARE_INDEX[num]++;
+                if (COMPARE_INDEX[num] >= RedisReader.READ_INDEX[num]) {
+                    compared[num] = true;
+                }
                 total.incrementAndGet();
+                compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
                 RedisWriter.write(data1);
             }
 
-            System.out.println("total=" + total);
+            System.out.println("compare total=" + total + " data=" + data1);
             if (total.get() >= 10000) {
                 break;
             }
@@ -47,8 +79,8 @@ public class RedisComparer {
         while (RedisWriter.finish()) {
             return;
         }
-    }
 
+    }
 
     /**
      * a > b  正数

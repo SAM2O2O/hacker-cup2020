@@ -18,7 +18,8 @@ public class RedisWriter {
     // 最新写入的index
     private static int nextIndex = 0;
 
-    private static final int LENGTH = 32768;
+    //    private static final int LENGTH = 32768;
+    private static final int LENGTH = 10;
 
     public static void write(String data) {
         result[nextIndex] = data;
@@ -40,7 +41,7 @@ public class RedisWriter {
                 int writeSize = nextIndex - currentIndex;
                 String result = combine(currentIndex, writeSize);
                 currentIndex += writeSize;
-                System.out.println("Writer index=" + currentIndex);
+//                System.out.println("Writer index=" + currentIndex);
                 jedis.append(redisKey, result);
             }
         }
