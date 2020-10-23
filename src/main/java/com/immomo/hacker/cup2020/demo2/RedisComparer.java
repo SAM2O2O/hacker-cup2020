@@ -41,8 +41,6 @@ public class RedisComparer {
                 if (data1 == null) {
                     compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
                     break;
-                } else {
-//                    System.out.println("======num=" + num + " data1=" + data1);
                 }
 
                 String data2 = compareDatas[i];
@@ -61,27 +59,22 @@ public class RedisComparer {
             }
             if (data1 != null) {
                 COMPARE_INDEX[num]++;
-                if (COMPARE_INDEX[num] >= RedisReader.READ_INDEX[num]) {
+                if (COMPARE_INDEX[num] >= 1000) {
                     compared[num] = true;
                 }
                 total.incrementAndGet();
                 compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
                 RedisWriter.write(data1);
 
-                for (int ss = 0; ss < COMPARE_INDEX.length; ss++) {
-                    System.out.println("compare Index= " + ss + " num=" + COMPARE_INDEX[ss] + " total=" + total.get());
-                }
+//                for (int ss = 0; ss < COMPARE_INDEX.length; ss++) {
+//                    System.out.println("compare Index= " + ss + " num=" + COMPARE_INDEX[ss] + " total=" + total.get() + " left=" + Main.RedisToListMap.get("list-" + ss).size() + " finish=" + compared[ss]);
+//                }
             }
 
 
             if (total.get() >= 10000) {
                 break;
             }
-        }
-
-        //check finish
-        while (RedisWriter.finish()) {
-            return;
         }
 
     }
