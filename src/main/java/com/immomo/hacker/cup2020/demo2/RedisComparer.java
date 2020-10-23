@@ -20,7 +20,11 @@ public class RedisComparer {
             for (int i = 1; i < compareDatas.length; i++) {
                 String data2 = compareDatas[i];
                 if (data1 == null) {
-
+                    num = i;
+                    data1 = data2;
+                }
+                if (data2 == null) {
+                    continue;
                 }
                 if (compare(data1, data2) > 0) {
                     data1 = data2;
