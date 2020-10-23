@@ -31,7 +31,7 @@ public class RedisComparer {
                     num = i;
                 }
             }
-            compareDatas[num] = Main.RedisToListMap.get("list-" + num).pop();
+            compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
             if (data1 != null) {
                 total.incrementAndGet();
                 RedisWriter.write(data1);
