@@ -15,8 +15,6 @@ public class Main {
     public static final String RedisHost = "127.0.0.1";
     public static final int RedisPort = 6379;
 
-    public static final LinkedList<String> EndDataList = new LinkedList<>();
-
     public static Map<String, List> RedisToListMap = new HashMap<>(10);
 
     private static void init() {
@@ -35,7 +33,7 @@ public class Main {
 
         RedisReader.read();
 
-        RedisWriter.write();
+        new Thread(new RedisWriter.WriterRunable()).start();
 
         RedisComparer.compare();
     }

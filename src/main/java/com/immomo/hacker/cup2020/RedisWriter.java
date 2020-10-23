@@ -1,9 +1,6 @@
 package com.immomo.hacker.cup2020;
 
-import com.sun.tools.javac.util.StringUtils;
 import redis.clients.jedis.Jedis;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author SAM{an.guoyue254@gmail.com}
@@ -12,33 +9,46 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RedisWriter {
 
-    private static AtomicBoolean RUNNING = new AtomicBoolean(true);
     private static Jedis jedis = new Jedis(Main.RedisHost, Main.RedisPort);
     private static final String redisKey = "result-key";
 
-    public static void write() {
+    private static final String[] result = new String[10001];
+    // 已经写入的index
+    private static int currentIndex = 0;
+    // 最新写入的index
+    private static int nextIndex = 0;
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+    private static final int LENGTH = 32768;
 
-                while (true) {
-                    String data = Main.EndDataList.pop();
-                    if (data != null) {
-                        jedis.append(redisKey, data);
-                    }
+    public static void write(String data) {
+        result[nextIndex] = data;
+        nextIndex++;
+    }
 
-                    if (!RUNNING.get() && Main.EndDataList.isEmpty()) {
-                        return;
-                    }
-                }
+    static class WriterRunable implements Runnable {
 
+        @Override
+        public void run() {
+            while (currentIndex <= 10000) {
+                int writeSize = nextIndex - currentIndex;
+                String result = combine(currentIndex, writeSize);
+                currentIndex += writeSize;
+                jedis.append(redisKey, result);
             }
-        });
+        }
 
     }
 
-    public static void end() {
-        RUNNING.getAndSet(false);
+    private static String combine(int startIndex, int size) {
+        if (size == 1) {
+            return result[startIndex];
+        }
+
+        StringBuilder sb = new StringBuilder(size * LENGTH);
+        for (int i = 0; i < size; i++) {
+            sb.append(result[startIndex + i]);
+        }
+        return sb.toString();
     }
+
 }
