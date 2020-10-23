@@ -12,7 +12,7 @@ import java.util.List;
 public class RedisReader {
 
     public static void read() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
 
 
             final String redisKey = "list-" + i;
