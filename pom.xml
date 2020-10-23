@@ -27,7 +27,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.immomo.hacker.cup2020.Main</mainClass>
+                            <mainClass>com.immomo.hacker.cup2020.demo2.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

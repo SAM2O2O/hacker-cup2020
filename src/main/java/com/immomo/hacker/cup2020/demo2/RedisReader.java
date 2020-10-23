@@ -1,4 +1,4 @@
-package com.immomo.hacker.cup2020;
+package com.immomo.hacker.cup2020.demo2;
 
 import redis.clients.jedis.Jedis;
 

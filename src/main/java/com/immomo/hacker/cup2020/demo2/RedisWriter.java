@@ -1,4 +1,4 @@
-package com.immomo.hacker.cup2020;
+package com.immomo.hacker.cup2020.demo2;
 
 import redis.clients.jedis.Jedis;
 
@@ -14,7 +14,7 @@ public class RedisWriter {
 
     private static final String[] result = new String[10001];
     // 已经写入的index
-    private static int currentIndex = 0;
+    public static int currentIndex = 0;
     // 最新写入的index
     private static int nextIndex = 0;
 
@@ -23,6 +23,13 @@ public class RedisWriter {
     public static void write(String data) {
         result[nextIndex] = data;
         nextIndex++;
+    }
+
+    public static boolean finish() {
+        if (currentIndex >= 10000) {
+            return true;
+        }
+        return false;
     }
 
     static class WriterRunable implements Runnable {
