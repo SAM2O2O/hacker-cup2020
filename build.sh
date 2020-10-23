@@ -1,7 +1,5 @@
-
-
-cd `dirname $0`
+cd $(dirname $0)
 mvn -T 2C clean package
 
-rm -rf hacker-cup-jar-with-dependencies.jar
-cp target/hacker-cup-jar-with-dependencies.jar hacker-cup-jar-with-dependencies.jar
+rm -rf hacker-cup2020-jar-with-dependencies.jar.jar
+cp target/hacker-cup2020-jar-with-dependencies.jar.jar hacker-cup2020-jar-with-dependencies.jar
