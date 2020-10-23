@@ -2,6 +2,8 @@ package com.immomo.hacker.cup2020;
 
 import redis.clients.jedis.Jedis;
 
+import java.util.List;
+
 /**
  * @author SAM{an.guoyue254@gmail.com}
  * @description com.immomo.hacker.cup2020
@@ -20,11 +22,18 @@ public class RedisReader {
                 @Override
                 public void run() {
 
+                    List bufList = Main.RedisToListMap.get(redisKey);
+
                     int count = 0;
                     // 10个连接
                     Jedis jedis = new Jedis(Main.RedisHost, Main.RedisPort);
 
                     String data = jedis.rpop(redisKey);
+
+                    if (data != null && bufList.size() < 5) {
+                        count++;
+                        bufList.add(data);
+                    }
 
                 }
             }).start();

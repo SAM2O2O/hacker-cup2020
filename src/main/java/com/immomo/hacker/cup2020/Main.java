@@ -17,16 +17,40 @@ public class Main {
 
     public static final LinkedList<String> EndDataList = new LinkedList<>();
 
-    public static Map<String, List> RedisToListMap = new HashMap<>();
+    public static Map<String, List> RedisToListMap = new HashMap<>(10);
+
+    private static void init() {
+        for (int i = 0; i < 10; i++) {
+            List<String> list = new LinkedList<>();
+            RedisToListMap.put("list-" + i, list);
+        }
+    }
 
     /**
      * @param args
      */
     public static void main(String[] args) {
 
+        init();
+
         RedisReader.read();
 
         RedisWriter.start();
     }
 
+    /**
+     * a > b  正数
+     * a < b 负数
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    private static int compare(String a, String b) {
+        if (a.length() == b.length()) {
+            return a.compareTo(b);
+        }
+
+        return a.length() - b.length();
+    }
 }
