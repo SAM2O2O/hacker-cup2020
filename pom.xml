@@ -27,7 +27,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.immomo.test.hacker.Main</mainClass>
+                            <mainClass>com.immomo.hacker.cup2020.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -55,5 +55,14 @@
 
     </build>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+    </dependencies>
 
 </project>
