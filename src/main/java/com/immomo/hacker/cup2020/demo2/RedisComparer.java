@@ -37,6 +37,7 @@ public class RedisComparer {
                 RedisWriter.write(data1);
             }
 
+            System.out.println("total=" + total);
             if (total.get() >= 10000) {
                 break;
             }

@@ -40,6 +40,7 @@ public class RedisWriter {
                 int writeSize = nextIndex - currentIndex;
                 String result = combine(currentIndex, writeSize);
                 currentIndex += writeSize;
+                System.out.println("Writer index=" + currentIndex);
                 jedis.append(redisKey, result);
             }
         }
