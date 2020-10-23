@@ -10,10 +10,9 @@ import java.util.List;
  * @date 2020/10/23 12:04 PM
  */
 public class RedisReader {
-    private static final int TotalQueueSize = 10;
 
     public static void read() {
-        for (int i = 0; i < TotalQueueSize; i++) {
+        for (int i = 0; i < 5; i++) {
 
 
             final String redisKey = "list-" + i;
@@ -30,9 +29,14 @@ public class RedisReader {
 
                     String data = jedis.rpop(redisKey);
 
-                    if (data != null && bufList.size() < 5) {
+                    if (data != null) {
                         count++;
                         bufList.add(data);
+                    } else {
+                        Long llen = jedis.llen(redisKey);
+                        if (llen == null || llen <= 0) {
+                            return;
+                        }
                     }
 
                 }

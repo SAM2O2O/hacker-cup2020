@@ -17,6 +17,7 @@ public class RedisWriter {
     private static final String redisKey = "result-key";
 
     public static void start() {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -34,6 +35,7 @@ public class RedisWriter {
 
             }
         });
+
     }
 
     public static void end() {
