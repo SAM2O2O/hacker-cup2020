@@ -37,11 +37,10 @@ public class RedisWriter {
 
         @Override
         public void run() {
-            while (currentIndex <= 10000) {
+            while (currentIndex < 10000) {
                 int writeSize = nextIndex - currentIndex;
                 String result = combine(currentIndex, writeSize);
                 currentIndex += writeSize;
-//                System.out.println("Writer index=" + currentIndex);
                 jedis.append(redisKey, result);
             }
         }

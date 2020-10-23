@@ -67,9 +67,13 @@ public class RedisComparer {
                 total.incrementAndGet();
                 compareDatas[num] = Main.RedisToListMap.get("list-" + num).poll();
                 RedisWriter.write(data1);
+
+                for (int ss = 0; ss < COMPARE_INDEX.length; ss++) {
+                    System.out.println("compare Index= " + ss + " num=" + COMPARE_INDEX[ss] + " total=" + total.get());
+                }
             }
 
-            System.out.println("compare total=" + total + " data=" + data1);
+
             if (total.get() >= 10000) {
                 break;
             }

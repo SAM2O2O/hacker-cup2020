@@ -36,7 +36,7 @@ public class Main {
 
         RedisComparer.compare();
 
-        System.out.println("Cost=" + System.currentTimeMillis() + startTime);
+        System.out.println("Cost=" + (System.currentTimeMillis() - startTime));
     }
 
 }
