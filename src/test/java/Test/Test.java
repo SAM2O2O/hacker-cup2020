@@ -18,7 +18,7 @@ public class Test {
 
     public static final String RedisHost = "127.0.0.1";
     public static final int RedisPort = 6379;
-    private static final int LENGTH = 10;
+    private static final int LENGTH = 32768;
 
     /**
      * @param args

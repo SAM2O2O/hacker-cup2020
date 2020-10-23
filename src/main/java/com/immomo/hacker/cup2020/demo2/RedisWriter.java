@@ -18,19 +18,12 @@ public class RedisWriter {
     // 最新写入的index
     private static int nextIndex = 0;
 
-    //    private static final int LENGTH = 32768;
-    private static final int LENGTH = 10;
+    private static final int LENGTH = 32768;
+//    private static final int LENGTH = 10;
 
     public static void write(String data) {
         result[nextIndex] = data;
         nextIndex++;
-    }
-
-    public static boolean finish() {
-        if (currentIndex >= 10000) {
-            return true;
-        }
-        return false;
     }
 
     static class WriterRunable implements Runnable {

@@ -27,7 +27,6 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
         init();
 
         RedisReader.read();
@@ -35,8 +34,6 @@ public class Main {
         new Thread(new RedisWriter.WriterRunable()).start();
 
         RedisComparer.compare();
-
-//        System.out.println("Cost=" + (System.currentTimeMillis() - startTime));
     }
 
 }
