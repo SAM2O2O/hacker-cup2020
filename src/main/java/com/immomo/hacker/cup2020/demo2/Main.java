@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class Main {
 
-    public static final String RedisHost = "127.0.0.1";
+    public static final String RedisHost = "hackercup-game02-team31-redis-server.momo.com";
     public static final int RedisPort = 6379;
 
     public static Map<String, LinkedList<String>> RedisToListMap = new HashMap<>(10);
